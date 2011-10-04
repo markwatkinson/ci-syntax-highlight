@@ -52,20 +52,22 @@ class highlight {
     luminous::set('relative-root', base_url() . 'application/hooks/ci-syntax-highlight/luminous/');
     $head = luminous::head_html();
     // insert the stylesheets
-    $output = preg_replace('/<head[^>]*>/i',
-      '$0' . "\n$head", $output);
+    $output = preg_replace('%</head%i',
+      "$head\n" . '$0', $output, 1);
     $exps = array(
       // [code] .. [/code]
       "/
         \[(code)(.*?)\][ \t]*(?:[\r\n]|\r\n)?
         (.*?)
-        (?:[\r\n]|\r\n)?\[\/code\]
+        \s*
+        \[\/code\]
       /xs",
       // <pre> or <code>
       "/
         <(pre|code)(.*?)>[ \t]*(?:[\r\n]|\r\n)?
         (.*?)
-        (?:[\r\n]|\r\n)?<\/\\1>
+        \s*
+        <\/\\1>
       /xs");
     foreach($exps as $e) {
       $output = preg_replace_callback($e, array($this, 'hook_cb'), $output);

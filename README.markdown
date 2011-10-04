@@ -25,14 +25,17 @@ The recognised code blocks are:
 ```
 
 Note that inside of the HTML tags (pre and code), the highlight class must be
-set, and the contents must be entity-escaped (as php's htmlspecialchars()).
+set (and in quotes!), and the contents must be entity-escaped
+(as from php's htmlspecialchars()).
+
+The CSS stylesheets are injected into your page's HEAD element, HOPEFULLY.
 
 ## Installation
 
 To use it, you will need to make the following adjustments:
 
 Put ci-syntax-highlight into application/hooks/, and create and make writable
-ci-synatx-highlight/luminous/cache.
+ci-syntax-highlight/luminous/cache.
 
 In case you have not already, you will need to alter
 application/config/config.php and set: $config['enable_hooks'] = TRUE;
