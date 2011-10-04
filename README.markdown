@@ -31,9 +31,8 @@ set, and the contents must be entity-escaped (as php's htmlspecialchars()).
 
 To use it, you will need to make the following adjustments:
 
-Create application/hooks/ci-syntax-highlight/ and insert highlight.php and
-luminous/ into that directory (note, you may need to give writable
-permissions to luminous/cache)
+Put ci-syntax-highlight into application/hooks/, and create and make writable
+ci-synatx-highlight/luminous/cache.
 
 In case you have not already, you will need to alter
 application/config/config.php and set: $config['enable_hooks'] = TRUE;
@@ -51,5 +50,8 @@ $hook['display_override'] = array(
 );
 ```
 
+If you want to change the theme, set it in params, e.g.
+'params' => array('theme' => 'zenophilia.css'). (themes are under 
+luminous/style/)
 
 

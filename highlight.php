@@ -1,6 +1,6 @@
 <?php
 
-/* place in application/config/config.php:
+/* place in application/config/hooks.php:
 $hook['display_override'] = array(
   'class' => 'highlight',
   'function' => 'hook',
@@ -11,7 +11,7 @@ $hook['display_override'] = array(
 */
 class highlight {
 
-  public function highlight($path=null) {
+  public function highlight() {
     if (!class_exists('luminous')) {
       require_once dirname(__FILE__) . '/luminous/luminous.php';
     }
@@ -41,10 +41,19 @@ class highlight {
     return luminous::highlight($language, $code);
   }
 
-  public function hook() {
+  public function hook($params = array()) {
     $CI = & get_instance();
     $output = $CI->output->get_output();
-
+    if (isset($params['theme'])) 
+      luminous::set('theme', $params['theme']);
+    if (!function_exists('base_url')) {
+      $CI->load->helper('url');
+    }
+    luminous::set('relative-root', base_url() . 'application/hooks/ci-syntax-highlight/luminous/');
+    $head = luminous::head_html();
+    // insert the stylesheets
+    $output = preg_replace('/<head[^>]*>/i',
+      '$0' . "\n$head", $output);
     $exps = array(
       // [code] .. [/code]
       "/
