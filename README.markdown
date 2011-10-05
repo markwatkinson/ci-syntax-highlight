@@ -53,8 +53,11 @@ $hook['display_override'] = array(
 );
 ```
 
-If you want to change the theme, set it in params, e.g.
-'params' => array('theme' => 'zenophilia.css'). (themes are under 
-luminous/style/)
+'params' is an associative array. The valid settings are:
+
+ + 'theme' => 'themefile.css' (themes are under luminous/style)
+ + 'header' => true|false (if false, the HEAD code is not inserted. Default 
+  true)
+
 
 

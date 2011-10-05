@@ -44,16 +44,19 @@ class highlight {
   public function hook($params = array()) {
     $CI = & get_instance();
     $output = $CI->output->get_output();
-    if (isset($params['theme'])) 
-      luminous::set('theme', $params['theme']);
-    if (!function_exists('base_url')) {
-      $CI->load->helper('url');
+    if (!isset($params['header']) || $params['header'] === true) {
+      if (isset($params['theme'])) 
+        luminous::set('theme', $params['theme']);
+      if (!function_exists('base_url')) {
+        $CI->load->helper('url');
+      }
+      luminous::set('relative-root', 
+        base_url() . 'application/hooks/ci-syntax-highlight/luminous/');
+      $head = luminous::head_html();
+      // insert the stylesheets
+      $output = preg_replace('%</head%i',
+        "$head\n" . '$0', $output, 1);
     }
-    luminous::set('relative-root', base_url() . 'application/hooks/ci-syntax-highlight/luminous/');
-    $head = luminous::head_html();
-    // insert the stylesheets
-    $output = preg_replace('%</head%i',
-      "$head\n" . '$0', $output, 1);
     $exps = array(
       // [code] .. [/code]
       "/
