@@ -25,7 +25,7 @@ class highlight {
       // code in <...> tags are legit. html so we need to unescape whatever they
       // had to escape
       $code = htmlspecialchars_decode($code);
-      preg_match('/class=([\'"])(.*?)(\\1)/', $meta, $m);
+      if (!preg_match('/class=([\'"])(.*?)(\\1)/', $meta, $m)) return $matches[0];
       $classes = preg_split('/\s+/', $m[2]);
       if (!in_array('highlight', $classes)) return $matches[0];
     }
