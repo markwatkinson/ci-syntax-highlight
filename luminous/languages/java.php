@@ -18,6 +18,9 @@ class LuminousJavaScanner extends LuminousSimpleScanner {
     $this->add_pattern('NUMERIC', LuminousTokenPresets::$NUM_REAL);
     $this->add_pattern('IDENT', '/[a-zA-Z$_][$\w]*/');
     $this->add_pattern('OPERATOR', '/[!%^&*\-=+:?|<>]+/');
+    // this is called an annotation
+    // http://download.oracle.com/javase/1,5.0/docs/guide/language/annotations.html
+    $this->add_pattern('FUNCTION', '/@[\w]+/');
   }
 
   public static function guess_language($src, $info) {

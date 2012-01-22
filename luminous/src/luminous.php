@@ -11,7 +11,7 @@ require_once(dirname(__FILE__) . '/formatters/formatter.class.php');
 require_once(dirname(__FILE__) . '/core/scanner.class.php');
 
 // updated automatically, use single quotes, keep single line
-define('LUMINOUS_VERSION', 'master');
+define('LUMINOUS_VERSION', 'v0.6.5');
 
 
 /*
@@ -371,6 +371,10 @@ class _Luminous {
       
     $this->scanners->AddScanner(array('diff', 'patch'),
       'LuminousDiffScanner', 'Diff', "$language_dir/diff.php");
+
+    $this->scanners->AddScanner(array('prettydiff', 'prettypatch',
+        'diffpretty', 'patchpretty'),
+      'LuminousPrettyDiffScanner', 'Diff-Pretty', "$language_dir/diff.php");
       
     $this->scanners->AddScanner(array('html', 'htm'),
       'LuminousHTMLScanner', 'HTML', "$language_dir/html.php",
@@ -951,13 +955,13 @@ abstract class luminous {
     $relative_root = preg_replace('%(?<!:)//+%', '/', $relative_root);
     $relative_root = rtrim($relative_root, '/');
     $out = '';
-    $link_template = "<link rel='stylesheet' type='text/css' href='$relative_root/style/%s'>\n";
+    $link_template = "<link rel='stylesheet' type='text/css' href='$relative_root/style/%s' id='%s'>\n";
     $script_template = "<script type='text/javascript' src='$relative_root/client/%s'></script>\n";
-    $out .= sprintf($link_template, 'luminous.css');
-    $out .= sprintf($link_template, $theme);
+    $out .= sprintf($link_template, 'luminous.css', 'luminous-style');
+    $out .= sprintf($link_template, $theme, 'luminous-theme');
     if ($js || LUMINOUS_DEBUG) {
       if ($jquery)
-        $out .= sprintf($script_template, 'jquery-1.4.2.min.js');
+        $out .= sprintf($script_template, 'jquery-1.6.4.min.js');
       $out .= sprintf($script_template, 'luminous.js');
       if (LUMINOUS_DEBUG) 
         $out .= sprintf($script_template, 'lineheight.js');

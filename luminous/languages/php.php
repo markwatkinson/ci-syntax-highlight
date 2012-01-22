@@ -20,6 +20,9 @@ class LuminousPHPSubScanner extends  LuminousScanner {
     $this->add_pattern('COMMENT', LuminousTokenPresets::$C_COMMENT_ML); 
     $this->add_pattern('NUMERIC', LuminousTokenPresets::$NUM_HEX);
     $this->add_pattern('NUMERIC', LuminousTokenPresets::$NUM_REAL);
+    // this should be picked up by the LuminousPHPScanner, but in case
+    // a user incorrectly calls the PHP-snippet scanner, we detect it.
+    $this->add_pattern('DELIMITER', '/<\?(?:php)?/');
     $this->add_pattern('OPERATOR', '@[!%^&*\\-=+~:<>/\\|\\.;,]+|\\?(?!>)@');
     $this->add_pattern('VARIABLE', '/\\$\\$?[a-zA-Z_]\w*/');
     $this->add_pattern('IDENT', '/[a-zA-Z_]\w*/');
@@ -56,7 +59,6 @@ class LuminousPHPSubScanner extends  LuminousScanner {
   
   function main() {
     $this->start();
-    $expecting = false;
     while (!$this->eos()) {
       $tok = null;
 
@@ -79,20 +81,19 @@ class LuminousPHPSubScanner extends  LuminousScanner {
       }
       
       if($tok === 'IDENT') {
+        // do the user defns here, i.e. class XYZ extends/implements ABC
+        // or function XYZ
         $m = $this->match();
-        if ($m === 'class') $expecting = 'class';
-        elseif ($m === 'function') $expecting = 'function';
-        else {
-          if ($expecting === 'class') {
-            $this->user_defs[$m] = 'TYPE';
-            $tok = 'USER_FUNCTION';
-          }
-          elseif($expecting === 'function') {
-            $this->user_defs[$m] = 'FUNCTION';
-            $tok = 'USER_FUNCTION';
-          }
-          $expecting = false;
+        $this->record($m, 'IDENT');
+        if (($m === 'class' || $m === 'function' || $m === 'extends' || $m === 'implements')
+          && $this->scan('/(\s+)([a-zA-Z_]\w*)/') )
+        {
+          $this->record($this->match_group(1), null);
+          $this->record($this->match_group(2), 'USER_FUNCTION');
+          $this->user_defs[$this->match_group(2)] = ($m === 'function')? 'FUNCTION'
+            : 'TYPE';
         }
+        continue;
       }
 
       elseif($tok === 'OPERATOR') {
